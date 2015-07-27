@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 
 class Listing extends Model{
 
-    use ModelFromStd;
+    use ModelFromObj;
 
     protected  $table = 'listings';
     public $fillable = ['id', 'title', 'description'];
@@ -17,7 +17,9 @@ class Listing extends Model{
     public function spAllListings(){
         $listings = DB::select('CALL sp_all_listings()');
         return new Collection(array_map(function($listing){
-            return $this->newFromStd($listing);
+            $model = $this->newFromObj($listing);
+            $model->exist = true;
+            return $model;
         }, $listings));
     }
 } 
